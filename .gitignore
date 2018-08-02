@@ -1,0 +1,10 @@
+.clang_complete
+.vscode/c_cpp_properties.json
+.pioenvs
+.piolibdeps
+.gcc-flags.json
+*~
+*.o
+*.nm
+*.lst
+.dep
