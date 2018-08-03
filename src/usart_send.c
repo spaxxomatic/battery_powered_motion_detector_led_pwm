@@ -1,26 +1,3 @@
-/*----------------------------------------------------------------------------
- Copyright:      Radig Ulrich  mailto: mail@ulrichradig.de
- Author:         Radig Ulrich
- Remarks:        
- known Problems: none
- Version:        24.10.2007
- Description:    RS232 Routinen
-
- Dieses Programm ist freie Software. Sie können es unter den Bedingungen der 
- GNU General Public License, wie von der Free Software Foundation veröffentlicht, 
- weitergeben und/oder modifizieren, entweder gemäß Version 2 der Lizenz oder 
- (nach Ihrer Option) jeder späteren Version. 
-
- Die Veröffentlichung dieses Programms erfolgt in der Hoffnung, 
- daß es Ihnen von Nutzen sein wird, aber OHNE IRGENDEINE GARANTIE, 
- sogar ohne die implizite Garantie der MARKTREIFE oder der VERWENDBARKEIT 
- FÜR EINEN BESTIMMTEN ZWECK. Details finden Sie in der GNU General Public License. 
-
- Sie sollten eine Kopie der GNU General Public License zusammen mit diesem 
- Programm erhalten haben. 
- Falls nicht, schreiben Sie an die Free Software Foundation, 
- Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307, USA. 
-------------------------------------------------------------------------------*/
 #include "usart_send.h"
 
 volatile unsigned int buffercounter = 0;
@@ -28,20 +5,20 @@ volatile unsigned int buffercounter = 0;
 char usart_rx_buffer[BUFFER_SIZE];
 char *rx_buffer_pointer_in	= &usart_rx_buffer[0];
 char *rx_buffer_pointer_out	= &usart_rx_buffer[0];
-	
+
 //----------------------------------------------------------------------------
 //Init serielle Schnittstelle
-void usart_init(unsigned long baudrate) 
-{ 
+void usart_init(unsigned long baudrate)
+{
 	//Serielle Schnittstelle 1
-  	//Enable TXEN im Register UCR TX-Data Enable
+	//Enable TXEN im Register UCR TX-Data Enable
 	UCR =(1 << TXEN );
 	// 0 = Parity Mode Disabled
 	// 1 = Parity Mode Enabled, Even Parity
 	// 2 = Parity Mode Enabled, Odd Parity
 	//UCSRC = 0x06 + ((parity+1)<<4);
 	//UCSRC |= (1<<USBS);
-	//Teiler wird gesetzt 
+	//Teiler wird gesetzt
 	// Set baud rate
 	UCSRA = 0;
 	// Enable receiver and transmitter
@@ -50,7 +27,7 @@ void usart_init(unsigned long baudrate)
 }
 
 //----------------------------------------------------------------------------
-//Routine für die Serielle Ausgabe eines Zeichens (Schnittstelle0)
+//Routine fï¿½r die Serielle Ausgabe eines Zeichens (Schnittstelle0)
 void usart_write_char(char c)
 {
         if(!usart_status.usart_disable)
@@ -60,15 +37,15 @@ void usart_write_char(char c)
             //Ausgabe des Zeichens
             UDR = c;
         }
-        return;    
+        return;
 }
 
 //------------------------------------------------------------------------------
 void usart_write_P (const char *Buffer,...)
 {
 	va_list ap;
-	va_start (ap, Buffer);	
-	
+	va_start (ap, Buffer);
+
 	int format_flag;
 	char str_buffer[10];
 	char str_null_buffer[10];
@@ -77,19 +54,19 @@ void usart_write_P (const char *Buffer,...)
 	int tmp = 0;
 	char by;
 	char *ptr;
-		
+
 	//Ausgabe der Zeichen
     for(;;)
 	{
 		by = pgm_read_byte(Buffer++);
 		if(by==0) break; // end of format string
-            
+
 		if (by == '%')
 		{
             by = pgm_read_byte(Buffer++);
 			if (isdigit(by)>0)
 				{
-                                 
+
  				str_null_buffer[0] = by;
 				str_null_buffer[1] = '\0';
 				move = atoi(str_null_buffer);
@@ -141,11 +118,11 @@ void usart_write_P (const char *Buffer,...)
 					move =0;
 					break;
 				}
-			
-			}	
+
+			}
 		else
 		{
-			usart_write_char ( by );	
+			usart_write_char ( by );
 		}
 	}
 	va_end(ap);
@@ -155,7 +132,7 @@ void usart_write_P (const char *Buffer,...)
 //Ausgabe eines Strings
 void usart_write_str(char *str)
 {
-	
+
 	while (*str)
 	{
 		usart_write_char(*str++);
